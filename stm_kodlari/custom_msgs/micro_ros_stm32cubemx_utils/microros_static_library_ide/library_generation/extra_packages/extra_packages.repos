@@ -1,0 +1,5 @@
+repositories:
+  rover_msgs:
+    type: git
+    url: https://github.com/Jdvxusb/rover_msgs
+    version: main

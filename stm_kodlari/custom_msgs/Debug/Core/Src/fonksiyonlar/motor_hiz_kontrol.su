@@ -1,0 +1,9 @@
+../Core/Src/fonksiyonlar/motor_hiz_kontrol.c:27:5:speedToPWM	16	static
+../Core/Src/fonksiyonlar/motor_hiz_kontrol.c:32:6:setPWM	32	static
+../Core/Src/fonksiyonlar/motor_hiz_kontrol.c:47:7:calculatePID	64	static
+../Core/Src/fonksiyonlar/motor_hiz_kontrol.c:62:7:applyRamp	24	static
+../Core/Src/fonksiyonlar/motor_hiz_kontrol.c:74:7:limitSpeedToPWM	16	static
+../Core/Src/fonksiyonlar/motor_hiz_kontrol.c:90:6:applySlipControl	16	static
+../Core/Src/fonksiyonlar/motor_hiz_kontrol.c:99:6:controlWheel	32	static
+../Core/Src/fonksiyonlar/motor_hiz_kontrol.c:107:6:controlRover	32	static
+../Core/Src/fonksiyonlar/motor_hiz_kontrol.c:128:6:controlDirection	48	static

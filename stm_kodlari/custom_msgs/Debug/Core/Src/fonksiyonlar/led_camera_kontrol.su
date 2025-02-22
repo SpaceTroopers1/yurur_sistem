@@ -1,0 +1,3 @@
+../Core/Src/fonksiyonlar/led_camera_kontrol.c:11:6:SetServoPosition	24	static
+../Core/Src/fonksiyonlar/led_camera_kontrol.c:20:6:KameraKontrol	16	static
+../Core/Src/fonksiyonlar/led_camera_kontrol.c:72:6:LedKontrol	8	static
