@@ -1,0 +1,24 @@
+// generated from rosidl_adapter/resource/msg.idl.em
+// with input from rover_msgs/msg/ControllerMsg.msg
+// generated code does not contain a copyright notice
+
+
+module rover_msgs {
+  module msg {
+    struct ControllerMsg {
+      float x;
+
+      float y;
+
+      float throttle;
+
+      int32 camerax;
+
+      int32 cameray;
+
+      int32 light;
+
+      int8 gear;
+    };
+  };
+};

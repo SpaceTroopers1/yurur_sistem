@@ -1,0 +1,260 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"childIndexes" : 
+					[
+						1
+					],
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-9037d1e44bea2021c80e.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.12"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						5,
+						6,
+						7,
+						8,
+						9,
+						10,
+						11,
+						12,
+						13,
+						14,
+						15,
+						16,
+						17,
+						18,
+						19,
+						20
+					]
+				},
+				{
+					"build" : "rover_msgs__py",
+					"jsonFile" : "directory-rover_msgs__py-f7921c13c0ec5c4b2bca.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.12"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "/home/omer/GitHub/yurur_sistem/ros2_ws/build/rover_msgs/rover_msgs__py",
+					"targetIndexes" : 
+					[
+						4
+					]
+				}
+			],
+			"name" : "",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0,
+						1
+					],
+					"name" : "rover_msgs",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4,
+						5,
+						6,
+						7,
+						8,
+						9,
+						10,
+						11,
+						12,
+						13,
+						14,
+						15,
+						16,
+						17,
+						18,
+						19,
+						20
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "ament_cmake_python_build_rover_msgs_egg::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-ament_cmake_python_build_rover_msgs_egg-78b159ffb4cb83db6e31.json",
+					"name" : "ament_cmake_python_build_rover_msgs_egg",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "ament_cmake_python_copy_rover_msgs::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-ament_cmake_python_copy_rover_msgs-c0c34ec3972351fd19d2.json",
+					"name" : "ament_cmake_python_copy_rover_msgs",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "rover_msgs::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-rover_msgs-0a45bb0d02641e99b1eb.json",
+					"name" : "rover_msgs",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "rover_msgs__cpp::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-rover_msgs__cpp-6b47a60ab6ae0a1c40a3.json",
+					"name" : "rover_msgs__cpp",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "rover_msgs__py::@7fd4d0c25b117f40e450",
+					"jsonFile" : "target-rover_msgs__py-d482869ba2b53a47cd6f.json",
+					"name" : "rover_msgs__py",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "rover_msgs__rosidl_generator_c::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-rover_msgs__rosidl_generator_c-cb8d73e616b7e962e14f.json",
+					"name" : "rover_msgs__rosidl_generator_c",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "rover_msgs__rosidl_generator_py::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-rover_msgs__rosidl_generator_py-0c5be9492c2333b556d4.json",
+					"name" : "rover_msgs__rosidl_generator_py",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "rover_msgs__rosidl_typesupport_c::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-rover_msgs__rosidl_typesupport_c-887ab690aa4871694730.json",
+					"name" : "rover_msgs__rosidl_typesupport_c",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "rover_msgs__rosidl_typesupport_c__pyext::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-rover_msgs__rosidl_typesupport_c__pyext-e2b0a41f05e74a4f2ac7.json",
+					"name" : "rover_msgs__rosidl_typesupport_c__pyext",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "rover_msgs__rosidl_typesupport_cpp::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-rover_msgs__rosidl_typesupport_cpp-d1e2a35f456f64dc6205.json",
+					"name" : "rover_msgs__rosidl_typesupport_cpp",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "rover_msgs__rosidl_typesupport_fastrtps_c::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-rover_msgs__rosidl_typesupport_fastrtps_c-71498a613723b701b874.json",
+					"name" : "rover_msgs__rosidl_typesupport_fastrtps_c",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "rover_msgs__rosidl_typesupport_fastrtps_c__pyext::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-rover_msgs__rosidl_typesupport_fastrtps_c__pyext-c129d0fa6d41cc0b1b55.json",
+					"name" : "rover_msgs__rosidl_typesupport_fastrtps_c__pyext",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "rover_msgs__rosidl_typesupport_fastrtps_cpp::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-rover_msgs__rosidl_typesupport_fastrtps_cpp-22dc4cbaee151e61da92.json",
+					"name" : "rover_msgs__rosidl_typesupport_fastrtps_cpp",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "rover_msgs__rosidl_typesupport_introspection_c::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-rover_msgs__rosidl_typesupport_introspection_c-d7a766ad0eca2303da05.json",
+					"name" : "rover_msgs__rosidl_typesupport_introspection_c",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "rover_msgs__rosidl_typesupport_introspection_c__pyext::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-rover_msgs__rosidl_typesupport_introspection_c__pyext-abb69f0ed27eca045e7e.json",
+					"name" : "rover_msgs__rosidl_typesupport_introspection_c__pyext",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "rover_msgs__rosidl_typesupport_introspection_cpp::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-rover_msgs__rosidl_typesupport_introspection_cpp-fa16349cbf5bb26cfb09.json",
+					"name" : "rover_msgs__rosidl_typesupport_introspection_cpp",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "rover_msgs__rosidl_typesupport_microxrcedds_c::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-rover_msgs__rosidl_typesupport_microxrcedds_c-685a8aed1012a4a7e00c.json",
+					"name" : "rover_msgs__rosidl_typesupport_microxrcedds_c",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "rover_msgs__rosidl_typesupport_microxrcedds_c__pyext::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-rover_msgs__rosidl_typesupport_microxrcedds_c__pyext-035247744100a2fa4da5.json",
+					"name" : "rover_msgs__rosidl_typesupport_microxrcedds_c__pyext",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "rover_msgs__rosidl_typesupport_microxrcedds_cpp::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-rover_msgs__rosidl_typesupport_microxrcedds_cpp-045cf000d948b90b1e26.json",
+					"name" : "rover_msgs__rosidl_typesupport_microxrcedds_cpp",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "rover_msgs_uninstall::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-rover_msgs_uninstall-c527947b097b653f694e.json",
+					"name" : "rover_msgs_uninstall",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "uninstall::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-uninstall-08a35b8d74777537ece6.json",
+					"name" : "uninstall",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/home/omer/GitHub/yurur_sistem/ros2_ws/build/rover_msgs",
+		"source" : "/home/omer/GitHub/yurur_sistem/ros2_ws/rover_msgs"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 3
+	}
+}

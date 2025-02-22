@@ -1,0 +1,13 @@
+Metadata-Version: 2.2
+Name: motor_kontrol
+Version: 0.0.0
+Summary: TODO: Package description
+Maintainer: omer
+Maintainer-email: kapanomer2006@gmail.com
+License: TODO: License declaration
+Requires-Dist: setuptools
+Dynamic: license
+Dynamic: maintainer
+Dynamic: maintainer-email
+Dynamic: requires-dist
+Dynamic: summary

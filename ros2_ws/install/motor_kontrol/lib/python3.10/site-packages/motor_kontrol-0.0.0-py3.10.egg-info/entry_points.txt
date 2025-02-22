@@ -1,0 +1,3 @@
+[console_scripts]
+pub = motor_kontrol.pub:main
+pub2 = motor_kontrol.keyboard_publisher:main

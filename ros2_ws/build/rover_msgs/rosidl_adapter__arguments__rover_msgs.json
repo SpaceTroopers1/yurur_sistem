@@ -1,0 +1,6 @@
+{
+  "package_name": "rover_msgs",
+  "non_idl_tuples": [
+    "/home/omer/GitHub/yurur_sistem/ros2_ws/rover_msgs:msg/ControllerMsg.msg"
+  ]
+}
