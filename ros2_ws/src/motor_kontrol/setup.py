@@ -21,7 +21,8 @@ setup(
     entry_points={
         'console_scripts': [
 		"pub= motor_kontrol.pub:main",
-		"pub2= motor_kontrol.keyboard_publisher:main"
+		"pub2= motor_kontrol.keyboard_publisher:main",
+		"mag = motor_kontrol.magno:main"
         ],
     },
 )
