@@ -137,10 +137,7 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../micro_ros_stm32cubemx_utils/microros_static_library_ide/libmicroros/include/rover_msgs/msg/encoder_msg.h \
  ../micro_ros_stm32cubemx_utils/microros_static_library_ide/libmicroros/include/rover_msgs/msg/detail/encoder_msg__struct.h \
  ../micro_ros_stm32cubemx_utils/microros_static_library_ide/libmicroros/include/rover_msgs/msg/detail/encoder_msg__functions.h \
- ../micro_ros_stm32cubemx_utils/microros_static_library_ide/libmicroros/include/rover_msgs/msg/detail/encoder_msg__type_support.h \
- ../Core/Src/fonksiyonlar/tanimlamalar.h \
- ../Core/Src/fonksiyonlar/camera_kontrol.h \
- ../Core/Src/fonksiyonlar/motor_hiz_kontrol.h
+ ../micro_ros_stm32cubemx_utils/microros_static_library_ide/libmicroros/include/rover_msgs/msg/detail/encoder_msg__type_support.h
 ../Core/Inc/main.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h:
 ../Core/Inc/stm32f4xx_hal_conf.h:
@@ -281,6 +278,3 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 ../micro_ros_stm32cubemx_utils/microros_static_library_ide/libmicroros/include/rover_msgs/msg/detail/encoder_msg__struct.h:
 ../micro_ros_stm32cubemx_utils/microros_static_library_ide/libmicroros/include/rover_msgs/msg/detail/encoder_msg__functions.h:
 ../micro_ros_stm32cubemx_utils/microros_static_library_ide/libmicroros/include/rover_msgs/msg/detail/encoder_msg__type_support.h:
-../Core/Src/fonksiyonlar/tanimlamalar.h:
-../Core/Src/fonksiyonlar/camera_kontrol.h:
-../Core/Src/fonksiyonlar/motor_hiz_kontrol.h:

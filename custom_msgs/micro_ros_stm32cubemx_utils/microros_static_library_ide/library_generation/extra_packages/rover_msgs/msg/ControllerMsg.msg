@@ -1,8 +1,0 @@
-float32 x
-float32 y
-float32 throttle 
-int32 camerax
-int32 cameray
-int32 light
-int8 gear
-int32 yaw

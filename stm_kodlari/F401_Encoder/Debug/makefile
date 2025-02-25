@@ -59,8 +59,7 @@ F401_Encoder.list \
 
 
 # All Target
-all:
-	+@$(MAKE) --no-print-directory pre-build && $(MAKE) --no-print-directory main-build
+all: main-build
 
 # Main-build Target
 main-build: F401_Encoder.elf secondary-outputs
@@ -86,10 +85,6 @@ clean:
 	-$(RM) F401_Encoder.elf F401_Encoder.list F401_Encoder.map default.size.stdout
 	-@echo ' '
 
-pre-build:
-	docker pull microros/micro_ros_static_library_builder:foxy && docker run --rm -v /home/yk/STM32CubeIDE/workspace_1.17.0/F401_Encoder:/project --env MICROROS_LIBRARY_FOLDER=micro_ros_stm32cubemx_utils/microros_static_library_ide microros/micro_ros_static_library_builder:foxy
-	-@echo ' '
-
 secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST)
 
 fail-specified-linker-script-missing:
@@ -99,6 +94,6 @@ fail-specified-linker-script-missing:
 warn-no-linker-script-specified:
 	@echo 'Warning: No linker script specified. Check the linker settings in the build configuration.'
 
-.PHONY: all clean dependents main-build fail-specified-linker-script-missing warn-no-linker-script-specified pre-build
+.PHONY: all clean dependents main-build fail-specified-linker-script-missing warn-no-linker-script-specified
 
 -include ../makefile.targets

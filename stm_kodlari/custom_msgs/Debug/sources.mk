@@ -19,11 +19,11 @@ MAP_FILES :=
 S_DEPS := 
 S_UPPER_DEPS := 
 C_DEPS := 
+OBJCOPY_BIN := 
 
 # Every subdirectory with source files must be described here
 SUBDIRS := \
 Core/Src \
-Core/Src/fonksiyonlar \
 Core/Src/microros_transports \
 Core/Startup \
 Drivers/STM32F4xx_HAL_Driver/Src \

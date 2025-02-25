@@ -16,7 +16,6 @@ RM := rm -rf
 -include Drivers/STM32F4xx_HAL_Driver/Src/subdir.mk
 -include Core/Startup/subdir.mk
 -include Core/Src/microros_transports/subdir.mk
--include Core/Src/fonksiyonlar/subdir.mk
 -include Core/Src/subdir.mk
 -include objects.mk
 
@@ -58,10 +57,12 @@ default.size.stdout \
 OBJDUMP_LIST += \
 custom_msgs.list \
 
+OBJCOPY_BIN += \
+custom_msgs.bin \
+
 
 # All Target
-all:
-	+@$(MAKE) --no-print-directory pre-build && $(MAKE) --no-print-directory main-build
+all: main-build
 
 # Main-build Target
 main-build: custom_msgs.elf secondary-outputs
@@ -82,16 +83,17 @@ custom_msgs.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
 	@echo 'Finished building: $@'
 	@echo ' '
 
+custom_msgs.bin: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-objcopy  -O binary $(EXECUTABLES) "custom_msgs.bin"
+	@echo 'Finished building: $@'
+	@echo ' '
+
 # Other Targets
 clean:
-	-$(RM) custom_msgs.elf custom_msgs.list custom_msgs.map default.size.stdout
+	-$(RM) custom_msgs.bin custom_msgs.elf custom_msgs.list custom_msgs.map default.size.stdout
 	-@echo ' '
 
-pre-build:
-	docker pull microros/micro_ros_static_library_builder:foxy && docker run --rm -v /home/yk/STM32CubeIDE/workspace_1.17.0/custom_msgs:/project --env MICROROS_LIBRARY_FOLDER=micro_ros_stm32cubemx_utils/microros_static_library_ide microros/micro_ros_static_library_builder:foxy
-	-@echo ' '
-
-secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST)
+secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST) $(OBJCOPY_BIN)
 
 fail-specified-linker-script-missing:
 	@echo 'Error: Cannot find the specified linker script. Check the linker settings in the build configuration.'
@@ -100,6 +102,6 @@ fail-specified-linker-script-missing:
 warn-no-linker-script-specified:
 	@echo 'Warning: No linker script specified. Check the linker settings in the build configuration.'
 
-.PHONY: all clean dependents main-build fail-specified-linker-script-missing warn-no-linker-script-specified pre-build
+.PHONY: all clean dependents main-build fail-specified-linker-script-missing warn-no-linker-script-specified
 
 -include ../makefile.targets
