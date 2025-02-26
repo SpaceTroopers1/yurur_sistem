@@ -61,9 +61,9 @@ class JoySubscriber(Node):
     def listener_callback(self, msg: Joy):
         # Process joystick inputs
         x = msg.axes[0] * 380      # X axis
-        y = msg.axes[1] * 380      # Y axis
-        throttle = (msg.axes[2] + 0.8) * 600
-        throttle = max(0.0, min(throttle, 800.0))
+        y =   0.0  # Y axis
+        throttle = (msg.axes[1]) * 1000
+        throttle = max(-800.0, min(throttle, 800.0))
         y = max(-250.0, min(y, 250.0))
         x = max(-250.0, min(x, 250.0))
         
