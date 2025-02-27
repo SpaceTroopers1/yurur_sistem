@@ -73,10 +73,10 @@ typedef struct {
 	float integralLimit;
 } Wheel;
 
-Wheel leftFrontWheel = {0, 0, 0, 0, 0.65f, 0.025f, 0.01f, 1000};//1
-Wheel rightFrontWheel = {0, 0, 0, 0, 0.65f, 0.025f, 0.01f, 1000};//2
-Wheel leftBackWheel = {0, 0, 0, 0, 0.65f, 0.025f, 0.01f, 1000};//3
-Wheel rightBackWheel = {0, 0, 0, 0, 0.65f, 0.025f, 0.01f, 1000};//4
+Wheel leftFrontWheel = {0, 0, 0, 0, 0.67f, 0.04f, 0.01f, 1000};//1
+Wheel rightFrontWheel = {0, 0, 0, 0, 0.60f, 0.04f, 0.01f, 1000};//2
+Wheel leftBackWheel = {0, 0, 0, 0, 0.65f, 0.04f, 0.01f, 1000};//3
+Wheel rightBackWheel = {0, 0, 0, 0, 0.65f, 0.04f, 0.01f, 1000};//4
 
 typedef struct {
     int16_t targetDirection;
@@ -102,7 +102,7 @@ Direction roverDirection = {90, 0, 0, 0};
 
 // Motor hızı sınırlayıcı
 #define MAX_SPEED_D  1000
-#define MAX_SPEED_S  5000
+#define MAX_SPEED_S  3000
 #define MIN_SPEED_D  -1000
 #define MAX_DIRECTION_SPEED  300
 #define MIN_DIRECTION_SPEED -300
@@ -190,6 +190,10 @@ int main(void)
   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);
   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_3);
   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_4);
+  HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1);
+  HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_2);
+  HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_3);
+  HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_4);
   /* USER CODE END 2 */
 
   /* Init scheduler */
@@ -431,6 +435,10 @@ static void MX_TIM2_Init(void)
   {
     Error_Handler();
   }
+  if (HAL_TIM_PWM_ConfigChannel(&htim2, &sConfigOC, TIM_CHANNEL_3) != HAL_OK)
+  {
+    Error_Handler();
+  }
   /* USER CODE BEGIN TIM2_Init 2 */
   HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
   HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2);
@@ -505,10 +513,7 @@ static void MX_TIM3_Init(void)
     Error_Handler();
   }
   /* USER CODE BEGIN TIM3_Init 2 */
-  HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1);
-  HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_2);
-  HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_3);
-  HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_4);
+
   /* USER CODE END TIM3_Init 2 */
   HAL_TIM_MspPostInit(&htim3);
 
@@ -586,9 +591,6 @@ static void MX_GPIO_Init(void)
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_2, GPIO_PIN_RESET);
-
   /*Configure GPIO pin : B1_Pin */
   GPIO_InitStruct.Pin = B1_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
@@ -601,13 +603,6 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(LD2_GPIO_Port, &GPIO_InitStruct);
-
-  /*Configure GPIO pin : PB2 */
-  GPIO_InitStruct.Pin = GPIO_PIN_2;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
 /* USER CODE BEGIN MX_GPIO_Init_2 */
 /* USER CODE END MX_GPIO_Init_2 */
@@ -636,21 +631,9 @@ rcl_subscription_t subscriber2;
 int16_t rotation_speedL = 0;/*300 ile -300 arasında olsun*/
 int16_t rotation_speedR = 0;/*300 ile -300 arasında olsun*/
 int dt;
-volatile uint32_t last_heartbeat_time = 0,heartbeat_time = 0;
+volatile uint32_t last_heartbeat_time = 0,heartbeat_time = 0,last_message_time;
 bool connection_lost = false;
 
-
-void LedKontrol(uint8_t light){
-
-	if (light > 0 )
-	{
- 	 	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_2, 0);
-	}
-	else
-	{
-		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_2, 1);
-	}
-}
 
 //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< CAMERA KONTROL >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 //--------------------------------------------------------------------------------------------------------------------
@@ -762,7 +745,22 @@ float calculatePID(Wheel *wheel, int max_pwm, int min_pwm, int dt) {
 
 /* --- Hız Sınırlandırma --- */
 int16_t limitSpeedToPWM(int16_t speed, GroundType groundType, int16_t max_speed) {
-	if (speed > max_speed) {speed = max_speed;}/*rgb yak*/
+
+	if(rcjoystick.light==1){
+		speed=speed*(MAX_SPEED_S/1000);
+		if (speed > MAX_SPEED_S) {speed = MAX_SPEED_S;}/*rgb yak*/
+	}/*rgb yak*/
+
+	else{
+		if (speed > max_speed) {speed = max_speed;}/*rgb yak*/
+	}
+
+	if (speed < MIN_SPEED_D) {speed = MIN_SPEED_D;}/*rgb yak*/
+
+
+
+
+
 	if (speed < MIN_SPEED_D) {speed = MIN_SPEED_D;}/*rgb yak*/
 
 
@@ -809,8 +807,8 @@ void controlDirection(int16_t Y, int16_t X, Direction *direction, int16_t *rotat
     if (output < MIN_DIRECTION_SPEED) output = MIN_DIRECTION_SPEED;
 
 
-		*rotation_speedL=-output*2;
-		*rotation_speedR=output*2;
+		*rotation_speedL=-output;
+		*rotation_speedR=output;
 
 
 
@@ -821,12 +819,12 @@ void controlDirection(int16_t Y, int16_t X, Direction *direction, int16_t *rotat
 /* --- Rover Kontrol Fonksiyonu --- */
 void controlRover(TIM_HandleTypeDef *htim1,TIM_HandleTypeDef *htim3 , int16_t rotation_speedL, int16_t rotation_speedR, uint16_t throttle) {
 
-    int16_t speedMultiplier = (rcjoystick.light == 1) ? 1 : -1;
 
-	    leftFrontWheel.targetSpeed  = speedMultiplier * (limitSpeedToPWM(throttle+rotation_speedL , currentGround, MAX_SPEED_D));
-	    leftBackWheel.targetSpeed   = speedMultiplier * (limitSpeedToPWM(throttle+rotation_speedL , currentGround, MAX_SPEED_D));
-	    rightFrontWheel.targetSpeed = speedMultiplier * (limitSpeedToPWM(throttle+rotation_speedR , currentGround, MAX_SPEED_D));
-	    rightBackWheel.targetSpeed  = speedMultiplier * (limitSpeedToPWM(throttle+rotation_speedR , currentGround, MAX_SPEED_D));
+	    leftFrontWheel.targetSpeed  = (limitSpeedToPWM(throttle+rotation_speedL , currentGround, MAX_SPEED_D));
+	    leftBackWheel.targetSpeed   = (limitSpeedToPWM(throttle+rotation_speedL , currentGround, MAX_SPEED_D));
+	    rightFrontWheel.targetSpeed = (limitSpeedToPWM(throttle+rotation_speedR , currentGround, MAX_SPEED_D));
+	    rightBackWheel.targetSpeed  = (limitSpeedToPWM(throttle+rotation_speedR , currentGround, MAX_SPEED_D));
+
 
 	    controlWheel(htim1, htim3, TIM_CHANNEL_1, &leftFrontWheel);
 	    controlWheel(htim1, htim3, TIM_CHANNEL_2, &rightFrontWheel);
@@ -847,8 +845,6 @@ void subscription_callback_encoder(const void * msgin)
 	rightFrontWheel.currentSpeed = incoming_msg->m2*2.6f;
 	leftBackWheel.currentSpeed = incoming_msg->m3*2.6f;
 	rightBackWheel.currentSpeed = incoming_msg->m4*2.6f;
-	if (leftFrontWheel.currentSpeed >0)
-		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, 0);
 
 }
 
@@ -860,6 +856,7 @@ void subscription_callback_controller(const void * msgin){
 	const rover_msgs__msg__ControllerMsg * incoming_msg = (const rover_msgs__msg__ControllerMsg *)msgin;
 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, 1);
     //en son alinan mesajin kacinci saniyede alindigini tut
+	last_message_time = HAL_GetTick();
 
 
 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, 1);
@@ -876,7 +873,6 @@ void subscription_callback_controller(const void * msgin){
     controlDirection(rcjoystick.y, rcjoystick.x, &roverDirection, &rotation_speedL, &rotation_speedR, rcjoystick.gear);
     controlRover(&htim1, &htim3, rotation_speedL, rotation_speedR, rcjoystick.throttle);
     KameraKontrol();
-    LedKontrol(rcjoystick.light);
 }
 
 
@@ -963,7 +959,7 @@ void StartDefaultTask(void *argument)
 		  heartbeat_time = HAL_GetTick();
 
 		  //250 milisaniye boyunca mesaj alinmamissa motorlari durdur.
-		  if (HAL_GetTick() - last_heartbeat_time > 250) {
+		  if (HAL_GetTick() - last_message_time > 250) {
 		      connection_lost = true;
 		  }
 		  else {
@@ -975,6 +971,11 @@ void StartDefaultTask(void *argument)
 		    __HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_2,0);
 		    __HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_3,0);
 			__HAL_TIM_SET_COMPARE(&htim1,TIM_CHANNEL_4,0);
+
+		    __HAL_TIM_SET_COMPARE(&htim3,TIM_CHANNEL_1,0);
+		    __HAL_TIM_SET_COMPARE(&htim3,TIM_CHANNEL_2,0);
+		    __HAL_TIM_SET_COMPARE(&htim3,TIM_CHANNEL_3,0);
+			__HAL_TIM_SET_COMPARE(&htim3,TIM_CHANNEL_4,0);
 			  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, 0);
 		  }
 		  }
