@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<launch>
+    <node pkg="micro_ros_agent" exec="micro_ros_agent" output="screen" args="serial --dev /dev/ttyACM0" />
+    <node pkg="micro_ros_agent" exec="micro_ros_agent" output="screen" args="serial --dev /dev/ttyACM1" />
+</launch>

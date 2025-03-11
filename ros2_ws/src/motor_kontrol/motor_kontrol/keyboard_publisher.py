@@ -26,7 +26,8 @@ class KeyboardPublisher(Node):
         """Continuously reads keyboard input and publishes it."""
         while rclpy.ok():
             key = self.get_key()
-            match key:
+            """
+            match (key):
                 case ('N'):
                     msg = String()
                     msg.data = '1'
@@ -63,7 +64,7 @@ class KeyboardPublisher(Node):
                     self.get_logger().info(f'Published gear input: {key}')
                 case _:
                     self.get_logger().info('Invalid gear')
-                    
+                  """
 def main(args=None):
     rclpy.init(args=args)
     node = KeyboardPublisher()

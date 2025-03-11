@@ -1,13 +1,13 @@
-from setuptools import find_packages, setup
+from setuptools import setup
 from glob import glob
 import os
 
-package_name = 'motor_kontrol'
+package_name = 'microros'
 
 setup(
     name=package_name,
     version='0.0.0',
-    packages=find_packages(exclude=['test']),
+    packages=[package_name],
     data_files=[
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
@@ -16,16 +16,13 @@ setup(
     ],
     install_requires=['setuptools'],
     zip_safe=True,
-    maintainer='omer',
-    maintainer_email='kapanomer2006@gmail.com',
+    maintainer='mustafa',
+    maintainer_email='106763822+mhvgujk@users.noreply.github.com',
     description='TODO: Package description',
     license='TODO: License declaration',
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-		"pub= motor_kontrol.pub:main",
-		"pub2= motor_kontrol.keyboard_publisher:main",
-		"mag = motor_kontrol.magno:main"
         ],
     },
 )
