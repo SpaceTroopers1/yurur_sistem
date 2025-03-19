@@ -33,20 +33,21 @@ class WheelOdometry(Node):
 
     def update_odometry(self, msg: EncoderMsg):
         # Simulated wheel speeds
-        V_left = (msg.m1 + msg.m2) / 2000  # Left wheels (m/s)
-        V_right = (msg.m3 + msg.m4) / 2000 # Right wheels (m/s)
+        V_left = (msg.m1 + msg.m3) /2 # Left wheels (m/s)
+        V_right = (msg.m2 + msg.m4) /2# Right wheels (m/s)
 
         V = (V_left + V_right) / 2
-        omega = (V_right - V_left) / self.WHEEL_BASE
+        omega = (V_right - V_left) / (self.WHEEL_BASE *2)
 
         current_time = self.get_clock().now()
         dt = (current_time - self.last_time).nanoseconds / 1e9  # Convert ns to seconds
         self.last_time = current_time
 
         # Update pose using odometry equations
+        self.theta += omega * dt
         self.x += V * math.cos(self.theta) * dt
         self.y += V * math.sin(self.theta) * dt
-        self.theta += omega * dt
+
 
         # Publish Odometry Message
         odom_msg = Odometry()
