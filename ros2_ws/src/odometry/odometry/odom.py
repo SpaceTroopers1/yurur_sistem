@@ -53,7 +53,7 @@ class WheelOdometry(Node):
         odom_msg = Odometry()
         odom_msg.header.stamp = self.get_clock().now().to_msg()
         odom_msg.header.frame_id = 'odom'
-        odom_msg.child_frame_id = 'base_link'
+        odom_msg.child_frame_id = 'base_footprint'
         odom_msg.pose.pose.position.x = self.x
         odom_msg.pose.pose.position.y = self.y
         quaternion = Quaternion()
@@ -64,7 +64,7 @@ class WheelOdometry(Node):
         t_base = TransformStamped()
         t_base.header.stamp = self.get_clock().now().to_msg()
         t_base.header.frame_id = "odom"
-        t_base.child_frame_id = "base_link"
+        t_base.child_frame_id = "base_footprint"
         t_base.transform.translation.x = self.x
         t_base.transform.translation.y = self.y
         t_base.transform.translation.z = 0.0
@@ -73,7 +73,32 @@ class WheelOdometry(Node):
         t_base.transform.rotation.y = q[1]
         t_base.transform.rotation.z = q[2]
         t_base.transform.rotation.w = q[3]
-        self.tf_broadcaster.sendTransform(t_base)
+        
+        base_footprint_to_base_link = TransformStamped()
+        base_footprint_to_base_link.header.stamp = self.get_clock().now().to_msg()
+        base_footprint_to_base_link.header.frame_id = 'base_footprint'
+        base_footprint_to_base_link.child_frame_id = 'base_link'
+        base_footprint_to_base_link.transform.translation.x = 0.0
+        base_footprint_to_base_link.transform.translation.y = 0.0
+        base_footprint_to_base_link.transform.translation.z = 0.0
+        base_footprint_to_base_link.transform.rotation.x = 0.0
+        base_footprint_to_base_link.transform.rotation.y = 0.0
+        base_footprint_to_base_link.transform.rotation.z = 0.0
+        base_footprint_to_base_link.transform.rotation.w = 1.0
+
+        # Static transform: base_link -> laser_frame
+        base_link_to_laser_frame = TransformStamped()
+        base_link_to_laser_frame.header.stamp = self.get_clock().now().to_msg()
+        base_link_to_laser_frame.header.frame_id = 'base_link'
+        base_link_to_laser_frame.child_frame_id = 'laser_frame'
+        base_link_to_laser_frame.transform.translation.x = 0.0
+        base_link_to_laser_frame.transform.translation.y = 0.0
+        base_link_to_laser_frame.transform.translation.z = 0.2  # Adjust as needed
+        base_link_to_laser_frame.transform.rotation.x = 0.0
+        base_link_to_laser_frame.transform.rotation.y = 0.0
+        base_link_to_laser_frame.transform.rotation.z = 0.0
+        base_link_to_laser_frame.transform.rotation.w = 1.0
+        self.tf_broadcaster.sendTransform([t_base, base_link_to_laser_frame, base_footprint_to_base_link])
 
         # Publish TF: sensor_link -> base_link (offset in front of the robot)
         t_sensor = TransformStamped()
