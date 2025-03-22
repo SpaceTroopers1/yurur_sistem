@@ -18,7 +18,7 @@ class JoySubscriber(Node):
             10
         )
         self.keyboard_subscription = self.create_subscription(
-            String,
+            Vector3,
             '/keyboard_input',
             self.keyboard_callback,
             10
@@ -34,19 +34,18 @@ class JoySubscriber(Node):
 
         # Publisher for ControllerMsg topic
         self.publisher = self.create_publisher(ControllerMsg, 'joystick_cmd', 10)
-
+        self.joy_msg = ControllerMsg()
         # Initialize variables
         self.gear = 0
         self.magno_x = 0.0
         self.magno_y = 0.0
         self.angle = 0.0
 
-    def keyboard_callback(self, msg: String):
-        try:
-            self.gear = int(msg.data)
-            self.get_logger().info(f'Gear changed to: {self.gear}')
-        except ValueError:
-            self.get_logger().warn(f'Invalid gear input: {msg.data}')
+    def keyboard_callback(self, msg: Vector3):
+        self.joy_msg.kp = msg.x
+        self.joy_msg.ki = msg.y
+        self.joy_msg.kd = msg.z
+        
 
     def mag_callback(self, msg: Vector3):
         # Update magnetometer readings from /mag_data
@@ -73,19 +72,19 @@ class JoySubscriber(Node):
         cameray = max(400.0, min(cameray, 2600.0))
 
         # Create and populate the ControllerMsg
-        joy_msg = ControllerMsg()
-        joy_msg.x = x
-        joy_msg.y = y
-        joy_msg.throttle = throttle 
-        joy_msg.camerax = int(camerax)
-        joy_msg.cameray = int(cameray)
-        joy_msg.light = int(light)
-        joy_msg.gear = self.gear
+
+        self.joy_msg.x = x
+        self.joy_msg.y = y
+        self.joy_msg.throttle = throttle 
+        self.joy_msg.camerax = int(camerax)
+        self.joy_msg.cameray = int(cameray)
+        self.joy_msg.light = int(light)
+        self.joy_msg.gear = self.gear
         # Use the computed yaw from magnetometer data
-        joy_msg.yaw = int(self.angle)
+        self.joy_msg.yaw = int(self.angle)
 
         # Publish the message
-        self.publisher.publish(joy_msg)
+        self.publisher.publish(self.joy_msg)
         self.get_logger().info(
             f'Published: x={x}, y={y}, throttle={throttle}, cameray={cameray}, '
             f'camerax={camerax}, light={light}, gear={self.gear}, yaw={self.angle:.2f}'
