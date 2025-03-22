@@ -1,8 +1,6 @@
 from setuptools import setup
-from glob import glob 
-import os
 
-package_name = 'odometry'
+package_name = 'camera'
 
 setup(
     name=package_name,
@@ -12,8 +10,6 @@ setup(
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
-        ('share/' + package_name + '/launch', glob('launch/*.xml')),
-        ('share/' + package_name + '/config', glob('config/*.rviz')),
     ],
     install_requires=['setuptools'],
     zip_safe=True,
@@ -24,7 +20,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-        	"odom = odometry.odom:main"
+	"sub = camera.sub:main"
         ],
     },
 )

@@ -47,7 +47,7 @@
 #define WHO_AM_I       0x75
 
 typedef struct{
-	int angular_velocity;
+	float angular_velocity;
 	int timer_counter;
 	int last_counter_value;
 }encoder_data;
@@ -668,9 +668,17 @@ void read_encoder_angular_velocity(encoder_data *motor,TIM_HandleTypeDef *htim,i
 			  	  else{
 			  		motor->angular_velocity = (motor->timer_counter - motor->last_counter_value);
 			  	  }
+
+
 	motor->angular_velocity *= 1000/delay;// geçen süreye bölmece
-	motor->angular_velocity /=6;
+	if(htim->Instance == TIM2 && change > 0){
+		motor->angular_velocity /=3500;
+	}
+	else{
+		motor->angular_velocity /=6000;
+	}
 	motor->angular_velocity *= 16; motor->angular_velocity /= 100;
+	motor ->angular_velocity*= 2 * M_PI;
 	motor->last_counter_value = motor->timer_counter;
 }
 
