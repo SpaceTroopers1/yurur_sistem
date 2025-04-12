@@ -1,4 +1,4 @@
-int32 m1
-int32 m2
-int32 m3
-int32 m4
+float32 m1
+float32 m2
+float32 m3
+float32 m4

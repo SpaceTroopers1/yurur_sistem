@@ -7,15 +7,14 @@ endif()
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
+find_package(geometry_msgs REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
 
-set(msg_files
-  "msg/ControllerMsg.msg"
-  "msg/EncoderMsg.msg"
-)
 
 rosidl_generate_interfaces(${PROJECT_NAME}
-  ${msg_files}
+  "msg/ControllerMsg.msg"
+  "msg/EncoderMsg.msg"
+  DEPENDENCIES std_msgs # Add packages that above messages depend on, in this case geometry_msgs for Sphere.msg
 )
 # uncomment the following section in order to fill in
 # further dependencies manually.
@@ -32,7 +31,5 @@ if(BUILD_TESTING)
   set(ament_cmake_cpplint_FOUND TRUE)
   ament_lint_auto_find_test_dependencies()
 endif()
-
-ament_export_dependencies(rosidl_default_runtime)
 
 ament_package()
