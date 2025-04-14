@@ -49,9 +49,9 @@ typedef struct joystick {
 joystick rcjoystick = {0};
 
 typedef struct {
-    int16_t targetSpeed;
-    int16_t currentSpeed;
-    int16_t previousErrorSpeed;
+    float targetSpeed;
+    float currentSpeed;
+    float previousErrorSpeed;
     int integralSpeed;
 
 	float KP;
@@ -81,11 +81,6 @@ typedef struct{
 #define MIN_SPEED_D  -1000
 
 // Encoder
-#define ACCEL_XOUT_H   0x3B
-#define GYRO_XOUT_H    0x43
-#define MPU9250_ADDR   0x68   // Use 0x69 if AD0 is high
-#define PWR_MGMT_1     0x6B
-#define WHO_AM_I       0x75
 #define max_bits 65535;
 
 /* USER CODE END PD */
@@ -99,6 +94,7 @@ static uint32_t last_time = 0;
 TIM_HandleTypeDef htim1;
 TIM_HandleTypeDef htim3;
 TIM_HandleTypeDef htim4;
+TIM_HandleTypeDef htim5;
 
 UART_HandleTypeDef huart2;
 DMA_HandleTypeDef hdma_usart2_rx;
@@ -123,6 +119,7 @@ static void MX_USART2_UART_Init(void);
 static void MX_TIM1_Init(void);
 static void MX_TIM3_Init(void);
 static void MX_TIM4_Init(void);
+static void MX_TIM5_Init(void);
 void StartDefaultTask(void *argument);
 
 /* USER CODE BEGIN PFP */
@@ -165,11 +162,13 @@ int main(void)
   MX_TIM1_Init();
   MX_TIM3_Init();
   MX_TIM4_Init();
+  MX_TIM5_Init();
   /* USER CODE BEGIN 2 */
   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);
   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_3);
   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_4);
+  HAL_TIM_Base_Start_IT(&htim5);
   /* USER CODE END 2 */
 
   /* Init scheduler */
@@ -399,7 +398,7 @@ static void MX_TIM3_Init(void)
     Error_Handler();
   }
   /* USER CODE BEGIN TIM3_Init 2 */
-
+  HAL_TIM_Encoder_Start(&htim3, TIM_CHANNEL_ALL);
   /* USER CODE END TIM3_Init 2 */
 
 }
@@ -448,8 +447,53 @@ static void MX_TIM4_Init(void)
     Error_Handler();
   }
   /* USER CODE BEGIN TIM4_Init 2 */
-
+  HAL_TIM_Encoder_Start(&htim4, TIM_CHANNEL_ALL);
   /* USER CODE END TIM4_Init 2 */
+
+}
+
+/**
+  * @brief TIM5 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM5_Init(void)
+{
+
+  /* USER CODE BEGIN TIM5_Init 0 */
+
+  /* USER CODE END TIM5_Init 0 */
+
+  TIM_ClockConfigTypeDef sClockSourceConfig = {0};
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+
+  /* USER CODE BEGIN TIM5_Init 1 */
+
+  /* USER CODE END TIM5_Init 1 */
+  htim5.Instance = TIM5;
+  htim5.Init.Prescaler = 42000;
+  htim5.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim5.Init.Period = 200;
+  htim5.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim5.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
+  if (HAL_TIM_Base_Init(&htim5) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+  if (HAL_TIM_ConfigClockSource(&htim5, &sClockSourceConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_UPDATE;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim5, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM5_Init 2 */
+
+  /* USER CODE END TIM5_Init 2 */
 
 }
 
@@ -566,6 +610,61 @@ int dt;
 volatile uint32_t last_heartbeat_time = 0,heartbeat_time = 0,last_message_time;
 bool connection_lost = false;
 
+//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Encoder >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+//--------------------------------------------------------------------------------------------------------------------
+int delay = 100;
+
+rcl_node_t nodesub;
+rover_msgs__msg__EncoderMsg encodermsg;
+rcl_subscription_t subscriber;
+
+encoder_data front;
+encoder_data rear;
+
+void read_encoder_angular_velocity(encoder_data *motor,TIM_HandleTypeDef *htim,int delay){
+	motor->timer_counter = __HAL_TIM_GET_COUNTER(htim);
+
+				 int change = motor->last_counter_value - motor->timer_counter;
+
+
+			  	  if(change > 60000){
+			  		motor->angular_velocity = -change + max_bits;// tekerlekteki açısal hızı veriyor olması lazım
+			  	  }
+			  	  else if (change < -60000){
+			  		motor->angular_velocity = -change - max_bits;
+			  	  }
+			  	  else{
+			  		motor->angular_velocity = (motor->timer_counter - motor->last_counter_value);
+			  	  }
+
+
+	motor->angular_velocity *= 1000/delay;// geçen süreye bölmece
+	if(htim->Instance == TIM2 && change > 0){
+		motor->angular_velocity /=3500;
+	}
+	else{
+		motor->angular_velocity /=6000;
+	}
+	motor->angular_velocity *= 16; motor->angular_velocity /= 100;
+	motor ->angular_velocity*= 2 * M_PI;
+	motor->last_counter_value = motor->timer_counter;
+}
+
+
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
+
+	if(htim->Instance == TIM5){
+
+		read_encoder_angular_velocity(&front,&htim3, delay);//on motor
+		read_encoder_angular_velocity(&rear, &htim4, delay);//arka motor
+		//HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
+
+
+	}
+
+
+}
+
 //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< MOTOR KONTROL >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 //--------------------------------------------------------------------------------------------------------------------
 /* --- Hız-PWM Uyumluluğu --- */
@@ -648,8 +747,8 @@ void subscription_callback_controller(const void * msgin){
 	last_message_time = HAL_GetTick();
 
 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, 1);
-    FrontWheel.targetSpeed  = (int)incoming_msg->right_speed;
-    BackWheel.targetSpeed   = (int)incoming_msg->right_speed;
+    FrontWheel.targetSpeed  = incoming_msg->saghiz;
+    BackWheel.targetSpeed   = incoming_msg->saghiz;
 
     // Rover'ı kontrol et
     controlWheel(TIM_CHANNEL_1, TIM_CHANNEL_2, &FrontWheel);
@@ -688,35 +787,45 @@ void StartDefaultTask(void *argument)
 
 
 
-	      rover_msgs__msg__ControllerMsg submsg;
-	      rclc_support_t support;
-	      rclc_executor_t executor;
-	      rcl_allocator_t allocator;
+	  rover_msgs__msg__ControllerMsg submsg;
+	  	      rover_msgs__msg__EncoderMsg encodermsg;
+	  	      rclc_support_t support;
+	  	      rclc_executor_t executor;
+	  	      rcl_allocator_t allocator;
+	  	      rcl_publisher_t publisher;
 
 
-	      allocator = rcl_get_default_allocator();
+	  	      allocator = rcl_get_default_allocator();
 
-	      	    // create init_options
-	      rclc_support_init(&support, 0, NULL, &allocator);
-
-
-	      	    // create node
-	      rclc_node_init_default(&nodesub, "sub_node", "", &support);
-	      rclc_executor_init(&executor, &support.context, 2, &allocator);
+	  	      	    // create init_options
+	  	      rclc_support_init(&support, 0, NULL, &allocator);
 
 
-	      	    // create subscription
-	      rclc_subscription_init_default(
-	      	        &subscriber,
-	      	        &nodesub,
-	      	        ROSIDL_GET_MSG_TYPE_SUPPORT(rover_msgs, msg, ControllerMsg),
-	      	        "joystick_cmd");
+	  	      	    // create node
+	  	      rclc_node_init_default(&nodesub, "sub_node", "", &support);
+	  	      rclc_subscription_init_default(
+	  	      	        &subscriber,
+	  	      	        &nodesub,
+	  	      	        ROSIDL_GET_MSG_TYPE_SUPPORT(rover_msgs, msg, ControllerMsg),
+	  	      	        "joystick_cmd");
+
+	  	      rclc_executor_init(&executor, &support.context, 2, &allocator);
+
+
+	  	      	    // create subscription
 
 
 
-	      rclc_executor_add_subscription(
-	      	      &executor, &subscriber, &submsg,
-	      	      &subscription_callback_controller, ON_NEW_DATA);
+
+	  	      rclc_executor_add_subscription(
+	  	      	      &executor, &subscriber, &submsg,
+	  	      	      &subscription_callback_controller, ON_NEW_DATA);
+
+	  	      rclc_publisher_init_default(
+	  	          &publisher,
+	  	          &nodesub,
+	  	          ROSIDL_GET_MSG_TYPE_SUPPORT(rover_msgs, msg, EncoderMsg),
+	  	          "encoder");
 
 
 
@@ -725,6 +834,9 @@ void StartDefaultTask(void *argument)
 	  {
 		  //mesaj gelip gelmedigini kontrol et
 		  rclc_executor_spin_some(&executor,100);
+		  encodermsg.l_front = front.angular_velocity;
+		  encodermsg.l_back =  rear.angular_velocity;
+		  rcl_publish(&publisher, &encodermsg, NULL);
 
 		  //programin calisma zamani
 		  heartbeat_time = HAL_GetTick();

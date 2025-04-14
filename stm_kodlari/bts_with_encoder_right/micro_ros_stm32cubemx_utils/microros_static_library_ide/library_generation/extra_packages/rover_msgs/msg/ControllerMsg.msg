@@ -1,11 +1,4 @@
-float32 x
-float32 y
-float32 throttle
-int32 camerax
-int32 cameray
-int32 light
-int8 gear
-int32 yaw
-float32 kp
-float32 kd
-float32 ki
+float32 solhiz
+float32 saghiz
+float32 light
+
