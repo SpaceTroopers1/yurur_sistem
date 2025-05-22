@@ -25,7 +25,9 @@ setup(
         'console_scripts': [
 		"pub= motor_kontrol.pub:main",
 		"pub2= motor_kontrol.keyboard_publisher:main",
-		"bluetooth = motor_kontrol.bluetooth:main"
+		"bluetooth = motor_kontrol.bluetooth:main",
+		"kumanda = motor_kontrol.kumanda:main",
+		"uzaktan_kumanda = motor_kontrol.uzaktan_kumanda:main"
         ],
     },
 )

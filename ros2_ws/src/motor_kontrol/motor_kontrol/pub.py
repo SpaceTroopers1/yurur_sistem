@@ -46,8 +46,8 @@ class JoySubscriber(Node):
 
         # Create and populate the ControllerMsg
 
-        self.joy_msg.solhiz = throttle + x
-        self.joy_msg.saghiz = throttle - x
+        self.joy_msg.solhiz = throttle - (x*2)
+        self.joy_msg.saghiz = throttle + (x*2)
         self.joy_msg.light = int(light)
         # Use the computed yaw from magnetometer data
 
